@@ -54,6 +54,31 @@ app.post("/users/login", async function (req: Request, res: Response) {
   });
 });
 
+app.post("/users/signup", async function (req:Request, res:Response) {
+  const body: {firstName: string; lastName: string; phone: string; email: string; password: string} = req.body;
+  // console.log("body:", req.body)
+  const user = await AppDataSource
+    .createQueryBuilder()
+    .insert()
+    .into(User)
+    .values([
+      {firstName: body.firstName, lastName: body.lastName, phone: body.phone, email: body.email, password: body.password},
+    ])
+    .execute()
+
+    return res.status(200).json({
+      user: user,
+    });
+  // if (user && user.id > 0) {
+  //   return res.status(200).json({
+  //     user: user,
+  //   });
+  // }
+  // return res.status(400).json({
+  //   message: "Login failed",
+  // });
+})
+
 app.put("/users/:id", async function (req: Request, res: Response) {
   const id = req.params.id;
   const user = await AppDataSource.getRepository(User).findOneBy({
