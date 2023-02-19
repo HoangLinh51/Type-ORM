@@ -43,7 +43,7 @@ app.post("/users/login", async function (req: Request, res: Response) {
     .where("u.email = :email", { email: body.email })
     .andWhere("u.password = :password", { password: body.password })
     .getOne();
-
+        
   if (user && user.id > 0) {
     return res.status(200).json({
       user: user,
@@ -54,30 +54,66 @@ app.post("/users/login", async function (req: Request, res: Response) {
   });
 });
 
-app.post("/users/signup", async function (req:Request, res:Response) {
-  const body: {firstName: string; lastName: string; phone: string; email: string; password: string} = req.body;
-  // console.log("body:", req.body)
-  const user = await AppDataSource
-    .createQueryBuilder()
-    .insert()
-    .into(User)
-    .values([
-      {firstName: body.firstName, lastName: body.lastName, phone: body.phone, email: body.email, password: body.password},
-    ])
-    .execute()
+app.post("/users/signup", async function (req: Request, res: Response) {
+  const body: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+    password: string;
+  } = req.body;
 
-    return res.status(200).json({
-      user: user,
+  if (body.firstName == "") {
+    return res.status(400).json({
+      message: "First name cannot be left blank",
     });
-  // if (user && user.id > 0) {
-  //   return res.status(200).json({
-  //     user: user,
-  //   });
-  // }
-  // return res.status(400).json({
-  //   message: "Login failed",
-  // });
-})
+  }
+  if (body.lastName == "") {
+    return res.status(400).json({
+      message: "Last name cannot be left blank",
+    });
+  }
+  if (body.email == "") {
+    return res.status(400).json({
+      message: "Email cannot be left blank",
+    });
+  }
+  if (body.phone == "") {
+    return res.status(400).json({
+      message: "Phone cannot be left blank",
+    });
+  }
+  if (body.password == "") {
+    return res.status(400).json({
+      message: "Password cannot be left blank",
+    });
+  }
+  const email = await AppDataSource.getRepository(User)
+  .createQueryBuilder("e")
+  .where("e.email = :email", { email: body.email })
+  .getOne();
+  if (email && email.id > 0) {
+    return res.status(400).json({
+      message: "Email already exist",
+    });
+  }
+  const user = await AppDataSource.createQueryBuilder()
+  .insert()
+  .into(User)
+  .values([
+    {
+      firstName: body.firstName,
+      lastName: body.lastName,
+      phone: body.phone,
+      email: body.email,
+      password: body.password,
+    },
+  ])
+  .execute();
+  return res.status(200).json({
+    message: "Sign Up Success",
+  });
+});
 
 app.put("/users/:id", async function (req: Request, res: Response) {
   const id = req.params.id;
