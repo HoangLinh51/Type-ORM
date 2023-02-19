@@ -19,6 +19,11 @@
   },
   "homepage": "https://github.com/HoangLinh51/Type-ORM#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
     "typescript": "^4.9.5"
   },
   "dependencies": {
