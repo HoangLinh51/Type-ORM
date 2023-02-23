@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcryptjs';
+import { IsNotEmpty } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
@@ -5,7 +7,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 })
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
   firstName: string;
@@ -21,4 +23,12 @@ export class User {
 
   @Column()
   password: string;
+
+  public hashPassword() {
+    this.password = bcrypt.hashSync(this.password, 8);
+  }
+
+  public checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+    return bcrypt.compareSync(unencryptedPassword, this.password);
+  }
 }

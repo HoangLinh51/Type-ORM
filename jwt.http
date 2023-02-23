@@ -1,0 +1,8 @@
+GET http://localhost:3300/users 
+
+###
+POST http://localhost:3300/login
+
+{
+    "username": "linh"
+}
