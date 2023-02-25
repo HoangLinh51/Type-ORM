@@ -7,7 +7,7 @@ import config from '../config/config';
 export default class AuthController {
   public static login = async (req: Request, res: Response) => {
     const body: { email: string; password: string } = req.body;
-    const userRepository = AppDataSource(User);
+    const userRepository = AppDataSource.getRepository(User);
     // if (!(email && password)) {
     //   res.status(400).send();
     // }
@@ -25,7 +25,7 @@ export default class AuthController {
       return;
     }
     // Check if encrypted password match
-    if (!user.checkIfUnencryptedPasswordIsValid(password)) {
+    if (!user.checkIfUnencryptedPasswordIsValid(user.password)) {
       res.status(404).send({ message: 'Incorrect user or password' });
       return;
     }

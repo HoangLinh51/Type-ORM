@@ -1,22 +1,14 @@
+import 'reflect-metadata';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as dotenv from 'dotenv';
 import * as http from 'http';
 import jwt from 'jsonwebtoken';
-import 'reflect-metadata';
-import { Request, Response } from 'express';
-import { User } from './entity/user';
-import { AppDataSource } from './conectdb';
 import routes from './routes';
+import { InitDBConnection } from './conectdb';
 
 // establish database connection
-AppDataSource.initialize()
-  .then(() => {
-    console.log('Data Source has been initialized!');
-  })
-  .catch(err => {
-    console.error('Error during Data Source initialization:', err);
-  });
+InitDBConnection();
 
 // create and setup express app
 const app = express();
