@@ -4,6 +4,8 @@ import { CustomError } from '../utils/response/custom-error';
 import config from '../config/config';
 import { CreateTotken } from 'src/utils/jwt';
 
+let userIDLogin: number = null;
+
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
   if (!authHeader) {
@@ -28,6 +30,11 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   const { userId } = jwtPayload;
   const newToken = CreateTotken(userId);
   res.setHeader('Authorization', 'Bearer ' + newToken);
+  userIDLogin = userId;
 
   return next();
 };
+
+export function GetUserIdLogin(): Number {
+  return userIDLogin;
+}
