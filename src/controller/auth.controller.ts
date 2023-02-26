@@ -5,6 +5,7 @@ import { User } from '../entity/user';
 import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import config from '../config/config';
+import { CreateTotken } from 'src/utils/jwt';
 
 export class AuthController {
   checkIfUnencryptedPasswordIsValid(unencryptedPassword: string, password: string): boolean {
@@ -21,8 +22,8 @@ export class AuthController {
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ message: 'Login Fail' });
     }
-    // console.log('jwt', jwtSecret);
-    const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: '30m' });
+
+    const token = CreateTotken(user.id);
     return res.status(200).json({ token });
   }
 }

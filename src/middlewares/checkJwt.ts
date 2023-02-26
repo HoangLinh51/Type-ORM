@@ -1,33 +1,33 @@
 import { NextFunction, Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
+import { CustomError } from '../utils/response/custom-error';
 import config from '../config/config';
+import { CreateTotken } from 'src/utils/jwt';
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
-  // Get the jwt token from the head
-  let token = req.headers.authorization as string;
-  let jwtPayload: { userId: any; username: any };
-  if (token.startsWith('Bearer ')) {
-    // Remove Bearer from string
-    token = token.slice(7, token.length).trimLeft();
+  const authHeader = req.get('Authorization');
+  if (!authHeader) {
+    const customError = new CustomError(400, 'General', 'Authorization header not provided');
+    return next(customError);
   }
-  // Try to validate the token and get data
+
+  let token = req.headers.authorization as string;
+  let jwtPayload: { userId: number };
+  if (token.startsWith('Bearer ')) {
+    token = token.split(' ')[1];
+  }
+
   try {
     jwtPayload = jwt.verify(token, config.jwtSecret) as any;
     res.locals.jwtPayload = jwtPayload;
-  } catch (error) {
-    // If token is not valid, respond with 401 (unauthorized)
-    res.status(401).send();
-    return;
+  } catch (err) {
+    const customError = new CustomError(401, 'Raw', 'JWT error', null, err);
+    return next(customError);
   }
 
-  // The token is valid for 1 hour
-  // We want to send a new token on every request
-  const { userId, username } = jwtPayload;
-  const newToken = jwt.sign({ userId, username }, config.jwtSecret, {
-    expiresIn: '1h',
-  });
-  res.setHeader('token', newToken);
+  const { userId } = jwtPayload;
+  const newToken = CreateTotken(userId);
+  res.setHeader('Authorization', 'Bearer ' + newToken);
 
-  // Call the next middleware or controller
-  next();
+  return next();
 };
