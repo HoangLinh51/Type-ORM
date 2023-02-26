@@ -9,7 +9,7 @@ const source = new DataSource({
   host: 'localhost',
   port: 3306,
   username: 'root',
-  password: 'leelectronic',
+  // password: 'leelectronic',
   database: 'leelectronic',
   entities: [User],
   logging: true,
