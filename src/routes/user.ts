@@ -5,6 +5,6 @@ import { BrandController } from '../controller/brand.controller';
 
 const router = Router();
 const userCtr = new UserController();
-router.post('/', [checkJwt], userCtr.createUser);
+router.post('/', userCtr.createUser);
 
 export default router;

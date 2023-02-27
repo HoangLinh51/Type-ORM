@@ -14,7 +14,7 @@ const source = new DataSource({
   database: 'leelectronic',
   entities: [User, Brands],
   logging: true,
-  synchronize: false,
+  synchronize: true,
 });
 
 export async function InitDBConnection() {

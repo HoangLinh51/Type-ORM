@@ -13,6 +13,31 @@ export class Brands {
   @Column()
   description: string;
 
-  @Column()
-  date: string;
+  @Column({
+    type: 'datetime',
+    nullable: true,
+  })
+  createdAt: Date;
+
+  @Column({
+    nullable: true,
+  })
+  createdBy: number;
+
+  @Column({
+    type: 'datetime',
+    nullable: true,
+  })
+  updatedAt: Date;
+
+  @Column({
+    nullable: true,
+  })
+  updatedBy: number;
+
+  @Column({
+    nullable: false,
+    default: false,
+  })
+  isDeleted: boolean;
 }

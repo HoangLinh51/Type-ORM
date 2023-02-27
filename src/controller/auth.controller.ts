@@ -5,7 +5,7 @@ import { User } from '../entity/user';
 import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import config from '../config/config';
-import { CreateTotken } from 'src/utils/jwt';
+import { CreateTotken } from '../utils/jwt';
 
 export class AuthController {
   checkIfUnencryptedPasswordIsValid(unencryptedPassword: string, password: string): boolean {
