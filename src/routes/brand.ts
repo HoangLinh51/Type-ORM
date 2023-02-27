@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { UserController } from '../controller/user.controller';
 import { BrandController } from '../controller/brand.controller';
 
 const router = Router();
-const userCtr = new UserController();
-router.post('/', userCtr.createUser);
+const brCtr = new BrandController();
+router.post('/create', brCtr.createBrand);
+router.get('/:id', brCtr.getBrandById);
 
 export default router;

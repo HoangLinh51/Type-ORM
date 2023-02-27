@@ -1,6 +1,7 @@
 /* eslint-disable no-path-concat */
 import { DataSource } from 'typeorm';
 import { User } from './entity/user';
+import { Brands } from './entity/brands';
 
 export let AppDataSource: DataSource = null;
 
@@ -11,7 +12,7 @@ const source = new DataSource({
   username: 'root',
   // password: 'leelectronic',
   database: 'leelectronic',
-  entities: [User],
+  entities: [User, Brands],
   logging: true,
   synchronize: false,
 });
