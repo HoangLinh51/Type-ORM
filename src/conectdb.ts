@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { User } from './entity/user';
 import { Brands } from './entity/brands';
 import { Category } from './entity/categorys';
+import { Product } from './entity/products';
 
 export let AppDataSource: DataSource = null;
 
@@ -13,7 +14,7 @@ const source = new DataSource({
   username: 'root',
   // password: 'leelectronic',
   database: 'leelectronic',
-  entities: [User, Brands, Category],
+  entities: [User, Brands, Category, Product],
   logging: true,
   synchronize: false,
 });
