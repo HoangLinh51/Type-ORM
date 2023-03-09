@@ -55,7 +55,7 @@ export class ProductController {
   async updateProduct(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Product);
     const { id } = req.params;
-    const { productName, productDescription, productPrice } = req.body;
+    const { productName, productDescription, productPrice, categoryId } = req.body;
 
     const newProduct = new Product();
 
@@ -69,7 +69,14 @@ export class ProductController {
     const response = await repository
       .createQueryBuilder()
       .update(Product)
-      .set({ productName: productName, productDescription: productDescription, productPrice: productPrice, updatedAt: new Date(), updatedBy: userId })
+      .set({
+        productName: productName,
+        productDescription: productDescription,
+        productPrice: productPrice,
+        categoryId: categoryId,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      })
       .where('id = :id', { id })
       .execute();
     res.status(200).send({ message: 'Information has been updated' });

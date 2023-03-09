@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { GetUserIdLogin } from '../middlewares/checkJwt';
 
 export class CategoryController {
-  async createBrand(req: Request, res: Response) {
+  async createCategory(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Categories);
     const { categoryName } = req.body;
     const newCategory = new Categories();
@@ -28,7 +28,7 @@ export class CategoryController {
     }
   }
 
-  async getBrandById(req: Request, res: Response) {
+  async getCategoryById(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Categories);
     const { id } = req.params;
     const response = await repository.createQueryBuilder().where('id = :id', { id }).andWhere('isDeleted = FALSE').getOne();
@@ -41,7 +41,7 @@ export class CategoryController {
     res.status(200).send(response);
   }
 
-  async updateBrand(req: Request, res: Response) {
+  async updateCategory(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Categories);
     const { id } = req.params;
     const { categoryName } = req.body;

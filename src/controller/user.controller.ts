@@ -27,7 +27,7 @@ export class UserController {
     }
   }
 
-  async getBrandById(req: Request, res: Response) {
+  async getUserById(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(User);
     const { id } = req.params;
     const response = await repository.createQueryBuilder().where('id = :id', { id }).andWhere('isDeleted = FALSE').getOne();

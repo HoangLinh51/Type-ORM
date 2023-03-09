@@ -29,7 +29,7 @@ export class BrandController {
     }
   }
 
-  async getBrandById(req: Request, res: Response) {
+  async getUserById(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(User);
     const { id } = req.params;
     const response = await repository.createQueryBuilder().where('id = :id', { id }).andWhere('isDeleted = FALSE').getOne();
@@ -42,7 +42,7 @@ export class BrandController {
     res.status(200).send(response);
   }
 
-  async updateBrand(req: Request, res: Response) {
+  async updateUser(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(User);
     const { id } = req.params;
     const { email, password, firstName, lastName, phone } = req.body;
