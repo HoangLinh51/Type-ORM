@@ -1,10 +1,7 @@
 import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
 import { AppDataSource } from '../conectdb';
 import { User } from '../entity/user';
 import { Request, Response } from 'express';
-import { Repository } from 'typeorm';
-import config from '../config/config';
 import { CreateTotken } from '../utils/jwt';
 
 export class AuthController {

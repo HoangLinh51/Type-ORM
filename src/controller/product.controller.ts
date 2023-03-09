@@ -3,11 +3,12 @@ import { Product } from '../entity/products';
 import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import { GetUserIdLogin } from '../middlewares/checkJwt';
+import { Categories } from '../entity/categories';
 
 export class ProductController {
-  async createBrand(req: Request, res: Response) {
+  async createProduct(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Product);
-    const { productName, productDescription, productPrice } = req.body;
+    const { productName, productDescription, productPrice, categoryId } = req.body;
     const newProduct = new Product();
 
     const userId = GetUserIdLogin();
@@ -18,11 +19,12 @@ export class ProductController {
     newProduct.productName = productName;
     newProduct.productDescription = productDescription;
     newProduct.productPrice = productPrice;
+    newProduct.categoryId = categoryId;
     newProduct.createdAt = new Date();
     newProduct.createdBy = userId;
 
-    const brand = await repository.createQueryBuilder('p').where('p.productName = :productName', { productName }).getOne();
-    if (brand) {
+    const product = await repository.createQueryBuilder('p').where('p.productName = :productName', { productName }).getOne();
+    if (product) {
       res.status(400).send({ message: 'Product is already taken' });
     } else {
       const response = await repository.save(newProduct);
@@ -30,10 +32,17 @@ export class ProductController {
     }
   }
 
-  async getBrandById(req: Request, res: Response) {
+  async getProductById(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Product);
-    const { id } = req.params;
-    const response = await repository.createQueryBuilder().where('id = :id', { id }).andWhere('isDeleted = FALSE').getOne();
+    const b = req.params.id;
+    const a = parseInt(b);
+    const response = await repository
+      .createQueryBuilder('u')
+      .leftJoinAndSelect('u.categories', 'categories')
+      .where('u.id = :id', { id: a })
+      .andWhere('u.isDeleted = FALSE')
+      .getOne();
+
     res.status(200).send(response);
   }
 
@@ -43,7 +52,7 @@ export class ProductController {
     res.status(200).send(response);
   }
 
-  async updateBrand(req: Request, res: Response) {
+  async updateProduct(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Product);
     const { id } = req.params;
     const { productName, productDescription, productPrice } = req.body;

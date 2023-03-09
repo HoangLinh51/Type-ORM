@@ -2,7 +2,7 @@
 import { DataSource } from 'typeorm';
 import { User } from './entity/user';
 import { Brands } from './entity/brands';
-import { Category } from './entity/categorys';
+import { Categories } from './entity/categories';
 import { Product } from './entity/products';
 
 export let AppDataSource: DataSource = null;
@@ -14,9 +14,9 @@ const source = new DataSource({
   username: 'root',
   // password: 'leelectronic',
   database: 'leelectronic',
-  entities: [User, Brands, Category, Product],
+  entities: [User, Brands, Categories, Product],
   logging: true,
-  synchronize: false,
+  synchronize: true,
 });
 
 export async function InitDBConnection() {

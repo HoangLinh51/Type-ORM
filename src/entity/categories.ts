@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { Product } from './products';
 
 @Entity({
-  name: 'category',
+  name: 'categories',
 })
-export class Category {
+export class Categories {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -37,4 +38,9 @@ export class Category {
     default: false,
   })
   isDeleted: boolean;
+
+  @OneToMany(() => Product, product => product.categories)
+  products: Product[];
+
+  productcategories: any;
 }

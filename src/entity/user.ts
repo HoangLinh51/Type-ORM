@@ -24,6 +24,34 @@ export class User {
   @Column()
   password: string;
 
+  @Column({
+    type: 'datetime',
+    nullable: true,
+  })
+  createdAt: Date;
+
+  @Column({
+    nullable: true,
+  })
+  createdBy: number;
+
+  @Column({
+    type: 'datetime',
+    nullable: true,
+  })
+  updatedAt: Date;
+
+  @Column({
+    nullable: true,
+  })
+  updatedBy: number;
+
+  @Column({
+    nullable: false,
+    default: false,
+  })
+  isDeleted: boolean;
+
   public hashPassword() {
     this.password = bcrypt.hashSync(this.password, 8);
   }

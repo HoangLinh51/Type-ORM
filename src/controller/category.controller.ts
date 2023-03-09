@@ -1,14 +1,14 @@
 import { AppDataSource } from '../conectdb';
-import { Category } from '../entity/categorys';
+import { Categories } from '../entity/categories';
 import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import { GetUserIdLogin } from '../middlewares/checkJwt';
 
 export class CategoryController {
   async createBrand(req: Request, res: Response) {
-    const repository = AppDataSource.getRepository(Category);
+    const repository = AppDataSource.getRepository(Categories);
     const { categoryName } = req.body;
-    const newCategory = new Category();
+    const newCategory = new Categories();
 
     const userId = GetUserIdLogin();
     if (!userId) {
@@ -29,24 +29,24 @@ export class CategoryController {
   }
 
   async getBrandById(req: Request, res: Response) {
-    const repository = AppDataSource.getRepository(Category);
+    const repository = AppDataSource.getRepository(Categories);
     const { id } = req.params;
     const response = await repository.createQueryBuilder().where('id = :id', { id }).andWhere('isDeleted = FALSE').getOne();
     res.status(200).send(response);
   }
 
   async list(req: Request, res: Response) {
-    const repository = AppDataSource.getRepository(Category);
+    const repository = AppDataSource.getRepository(Categories);
     const response = await repository.createQueryBuilder().where('isDeleted = FALSE').getManyAndCount();
     res.status(200).send(response);
   }
 
   async updateBrand(req: Request, res: Response) {
-    const repository = AppDataSource.getRepository(Category);
+    const repository = AppDataSource.getRepository(Categories);
     const { id } = req.params;
     const { categoryName } = req.body;
 
-    const newCategory = new Category();
+    const newCategory = new Categories();
 
     const userId = GetUserIdLogin();
     if (!userId) {
@@ -57,7 +57,7 @@ export class CategoryController {
 
     const response = await repository
       .createQueryBuilder()
-      .update(Category)
+      .update(Categories)
       .set({ categoryName: categoryName, updatedAt: new Date(), updatedBy: userId })
       .where('id = :id', { id })
       .execute();
@@ -65,9 +65,9 @@ export class CategoryController {
   }
 
   async delete(req: Request, res: Response) {
-    const repository = AppDataSource.getRepository(Category);
+    const repository = AppDataSource.getRepository(Categories);
     const { id } = req.params;
-    const response = repository.createQueryBuilder().update(Category).set({ isDeleted: true }).where('id = :id', { id }).execute();
+    const response = repository.createQueryBuilder().update(Categories).set({ isDeleted: true }).where('id = :id', { id }).execute();
     res.status(200).send(response);
   }
 }

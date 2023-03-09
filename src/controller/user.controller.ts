@@ -1,14 +1,8 @@
 import { AppDataSource } from '../conectdb';
 import { User } from '../entity/user';
 import { Request, Response } from 'express';
-import { Repository } from 'typeorm';
 
 export class UserController {
-  // repository: Repository<User> = null;
-  // constructor() {
-  //   this.repository = AppDataSource.getRepository(User);
-  // }
-
   async createUser(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(User);
     const { email, password, firstName, lastName, phone } = req.body;
@@ -31,5 +25,12 @@ export class UserController {
       const response = await repository.save(newUser);
       res.status(200).send(response);
     }
+  }
+
+  async getBrandById(req: Request, res: Response) {
+    const repository = AppDataSource.getRepository(User);
+    const { id } = req.params;
+    const response = await repository.createQueryBuilder().where('id = :id', { id }).andWhere('isDeleted = FALSE').getOne();
+    res.status(200).send(response);
   }
 }
