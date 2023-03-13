@@ -6,6 +6,10 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
   name: 'users',
 })
 export class User {
+  static filter(arg0: (user: { lastName: string }) => boolean) {
+    throw new Error('Method not implemented.');
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

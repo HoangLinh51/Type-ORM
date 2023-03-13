@@ -1,6 +1,9 @@
 import { AppDataSource } from '../conectdb';
 import { User } from '../entity/user';
-import { Request, Response } from 'express';
+import { Product } from '../entity/products';
+import { Categories } from '../entity/categories';
+import { query, Request, Response } from 'express';
+import { Repository } from 'typeorm';
 
 export class UserController {
   async createUser(req: Request, res: Response) {
@@ -32,5 +35,13 @@ export class UserController {
     const { id } = req.params;
     const response = await repository.createQueryBuilder().where('id = :id', { id }).andWhere('isDeleted = FALSE').getOne();
     res.status(200).send(response);
+  }
+
+  async search(req: Request, res: Response) {
+    const repository = AppDataSource.getRepository(User);
+    const firstName = req.query.firstName;
+    const query = await repository.createQueryBuilder('q').where('q.firstName LIKE :firstName', { firstName }).getMany();
+
+    res.status(200).send(query);
   }
 }

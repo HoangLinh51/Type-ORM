@@ -8,7 +8,7 @@ import { Categories } from '../entity/categories';
 export class ProductController {
   async createProduct(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Product);
-    const { productName, productDescription, productPrice, categoryId } = req.body;
+    const { productName, productDescription, productPrice, categoryId, brandId } = req.body;
     const newProduct = new Product();
 
     const userId = GetUserIdLogin();
@@ -20,6 +20,7 @@ export class ProductController {
     newProduct.productDescription = productDescription;
     newProduct.productPrice = productPrice;
     newProduct.categoryId = categoryId;
+    newProduct.brandId = brandId;
     newProduct.createdAt = new Date();
     newProduct.createdBy = userId;
 
@@ -46,16 +47,22 @@ export class ProductController {
     res.status(200).send(response);
   }
 
-  async list(req: Request, res: Response) {
+  async search(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Product);
-    const response = await repository.createQueryBuilder().where('isDeleted = FALSE').getManyAndCount();
+    const productName = req.query.productName;
+    const query = repository.createQueryBuilder('q').where('q.isDeleted = FALSE');
+    if (productName) {
+      query.andWhere('q.productName LIKE :productName', { productName });
+    }
+    const response = await query.getMany();
+    console.log('check--------------->', response);
     res.status(200).send(response);
   }
 
   async updateProduct(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Product);
     const { id } = req.params;
-    const { productName, productDescription, productPrice, categoryId } = req.body;
+    const { productName, productDescription, productPrice, categoryId, brandId } = req.body;
 
     const newProduct = new Product();
 
@@ -74,6 +81,7 @@ export class ProductController {
         productDescription: productDescription,
         productPrice: productPrice,
         categoryId: categoryId,
+        brandId: brandId,
         updatedAt: new Date(),
         updatedBy: userId,
       })

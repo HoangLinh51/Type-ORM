@@ -3,6 +3,7 @@ import { Brands } from '../entity/brands';
 import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import { GetUserIdLogin } from '../middlewares/checkJwt';
+import { Categories } from 'src/entity/categories';
 
 export class BrandController {
   async createBrand(req: Request, res: Response) {
@@ -36,9 +37,14 @@ export class BrandController {
     res.status(200).send(response);
   }
 
-  async list(req: Request, res: Response) {
+  async search(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Brands);
-    const response = await repository.createQueryBuilder().where('isDeleted = FALSE').getManyAndCount();
+    const brandName = req.query.brandName;
+    const query = repository.createQueryBuilder('q').where('q.isDeleted = FALSE');
+    if (brandName) {
+      query.andWhere('q.brandName LIKE :brandName', { brandName });
+    }
+    const response = await query.getMany();
     res.status(200).send(response);
   }
 

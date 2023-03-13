@@ -5,8 +5,8 @@ import { CategoryController } from '../controller/category.controller';
 const router = Router();
 const ctgCtr = new CategoryController();
 router.post('/create', [checkJwt], ctgCtr.createCategory);
-router.get('/:id', ctgCtr.getCategoryById);
-router.get('/', ctgCtr.list);
+router.get('/detail/:id', ctgCtr.getCategoryById);
+router.get('/search', ctgCtr.search);
 router.put('/update/:id', [checkJwt], ctgCtr.updateCategory);
 router.delete('/:id', ctgCtr.delete);
 

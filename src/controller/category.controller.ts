@@ -35,9 +35,15 @@ export class CategoryController {
     res.status(200).send(response);
   }
 
-  async list(req: Request, res: Response) {
+  async search(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Categories);
-    const response = await repository.createQueryBuilder().where('isDeleted = FALSE').getManyAndCount();
+    const categoryName = req.query.categoryName;
+    const query = repository.createQueryBuilder('q').where('q.isDeleted = FALSE');
+    if (categoryName) {
+      query.andWhere('q.categoryName LIKE :categoryName', { categoryName });
+    }
+    const response = await query.getMany();
+    console.log('check--------------->', response);
     res.status(200).send(response);
   }
 

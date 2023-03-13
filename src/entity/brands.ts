@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Product } from './products';
 
 @Entity({
   name: 'brands',
@@ -40,4 +41,7 @@ export class Brands {
     default: false,
   })
   isDeleted: boolean;
+
+  @OneToMany(() => Product, product => product.brands)
+  products: Product[];
 }

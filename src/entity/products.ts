@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne, JoinColumn } from 'typeorm';
 import { Categories } from './categories';
+import { Brands } from './brands';
 
 @Entity({
   name: 'products',
@@ -51,9 +52,19 @@ export class Product {
   })
   categoryId: number;
 
+  @Column({
+    name: 'brand_id',
+    nullable: true,
+  })
+  brandId: number;
+
   @ManyToOne(type => Categories)
   @JoinColumn({ name: 'category_id' })
   categories: Categories;
+
+  @ManyToOne(type => Brands)
+  @JoinColumn({ name: 'brand_id' })
+  brands: Brands;
 
   productcategories: any;
 }
