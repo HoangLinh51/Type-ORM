@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import { GetUserIdLogin } from '../middlewares/checkJwt';
 
-export class UserController {
+export class Admincontroller {
   async createUser(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(User);
     const { email, password, firstName, lastName, phone } = req.body;
@@ -36,14 +36,23 @@ export class UserController {
     res.status(200).send(response);
   }
 
-  async list(req: Request, res: Response) {
+  async search(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(User);
     const firstName = req.query.firstName;
+    const page: string = (req.query.page as string) || '1';
+    const p = parseInt(page);
+    const take: string = (req.query.take as string) || '2';
+    const t = parseInt(take);
+
+    let skip = (p - 1) * t;
+    if (skip < 0) {
+      skip = 0;
+    }
     const query = repository.createQueryBuilder('q').where('q.isDeleted = FALSE');
     if (firstName) {
       query.andWhere('q.firstName LIKE :firstName', { firstName });
     }
-    const response = await query.getMany();
+    const response = await query.take(t).skip(skip).getMany();
     console.log('check--------------->', response);
     res.status(200).send(response);
   }
