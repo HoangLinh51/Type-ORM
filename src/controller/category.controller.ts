@@ -37,13 +37,22 @@ export class CategoryController {
 
   async search(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Categories);
-    const categoryName = req.query.categoryName;
+    const categoryName = req.query.name;
+
+    const page: string = (req.query.page as string) || '1';
+    const p = parseInt(page);
+    const take: string = (req.query.take as string) || '2';
+    const t = parseInt(take);
+    let skip = (p - 1) * t;
+    if (skip < 0) {
+      skip = 0;
+    }
+
     const query = repository.createQueryBuilder('q').where('q.isDeleted = FALSE');
     if (categoryName) {
       query.andWhere('q.categoryName LIKE :categoryName', { categoryName });
     }
-    const response = await query.getMany();
-    console.log('check--------------->', response);
+    const response = await query.take(t).skip(skip).getMany();
     res.status(200).send(response);
   }
 

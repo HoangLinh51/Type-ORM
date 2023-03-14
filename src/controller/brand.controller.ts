@@ -39,12 +39,23 @@ export class BrandController {
 
   async search(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Brands);
-    const brandName = req.query.brandName;
+    const brandName = req.query.name;
+
+    const page: string = (req.query.page as string) || '1';
+    const p = parseInt(page);
+    const take: string = (req.query.take as string) || '2';
+    const t = parseInt(take);
+
+    let skip = (p - 1) * t;
+    if (skip < 0) {
+      skip = 0;
+    }
     const query = repository.createQueryBuilder('q').where('q.isDeleted = FALSE');
     if (brandName) {
       query.andWhere('q.brandName LIKE :brandName', { brandName });
     }
-    const response = await query.getMany();
+
+    const response = await query.take(t).skip(skip).getMany();
     res.status(200).send(response);
   }
 
