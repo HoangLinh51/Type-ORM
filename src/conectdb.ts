@@ -4,6 +4,10 @@ import { User } from './entity/user';
 import { Brands } from './entity/brands';
 import { Categories } from './entity/categories';
 import { Product } from './entity/products';
+// import { Order } from './entity/order';
+// import { Shippingaddress } from './entity/shipping_address';
+// import { Shippinginformation } from './entity/shipping_information';
+// import { Orderline } from './entity/order_line';
 
 export let AppDataSource: DataSource = null;
 
@@ -22,3 +26,5 @@ const source = new DataSource({
 export async function InitDBConnection() {
   AppDataSource = await source.initialize();
 }
+
+// , Order, Shippingaddress, Shippinginformation, Orderline

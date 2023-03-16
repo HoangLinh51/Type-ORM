@@ -1,13 +1,14 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne, JoinColumn } from 'typeorm';
 import { Categories } from './categories';
 import { Brands } from './brands';
+import { Orderline } from './order_line';
 
 @Entity({
   name: 'products',
 })
 export class Product {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   productName: string;
@@ -65,6 +66,10 @@ export class Product {
   @ManyToOne(type => Brands)
   @JoinColumn({ name: 'brand_id' })
   brands: Brands;
+
+  @ManyToOne(type => Orderline)
+  @JoinColumn({ name: 'orderline_id' })
+  orderline: Orderline;
 
   productcategories: any;
 }

@@ -6,7 +6,7 @@ import { Product } from './products';
 })
 export class Categories {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   categoryName: string;

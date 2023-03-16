@@ -1,9 +1,8 @@
 import { AppDataSource } from '../conectdb';
 import { User } from '../entity/user';
-import { Product } from '../entity/products';
-import { Categories } from '../entity/categories';
 import { query, Request, Response } from 'express';
 import { Repository } from 'typeorm';
+import { GetUserIdLogin } from '../middlewares/checkJwt';
 
 export class UserController {
   async createUser(req: Request, res: Response) {
@@ -39,9 +38,56 @@ export class UserController {
 
   async search(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(User);
-    const firstName = req.query.firstName;
-    const query = await repository.createQueryBuilder('q').where('q.firstName LIKE :firstName', { firstName }).getMany();
+    const firstName = req.query.name;
+    const page: string = (req.query.page as string) || '1';
+    const p = parseInt(page);
+    const take: string = (req.query.take as string) || '2';
+    const t = parseInt(take);
 
-    res.status(200).send(query);
+    let skip = (p - 1) * t;
+    if (skip < 0) {
+      skip = 0;
+    }
+    const query = repository.createQueryBuilder('q').where('q.isDeleted = FALSE');
+    if (firstName) {
+      query.andWhere('q.firstName LIKE :firstName', { firstName });
+    }
+    const response = await query.take(t).skip(skip).getMany();
+    res.status(200).send(response);
+  }
+
+  async updateUser(req: Request, res: Response) {
+    const repository = AppDataSource.getRepository(User);
+    const { id } = req.params;
+    const { email, password, firstName, lastName, phone } = req.body;
+
+    const newUser = new User();
+
+    const userId = GetUserIdLogin();
+    if (!userId) {
+      res.status(401).send('Token invalid');
+    }
+    newUser.email = email;
+    newUser.password = password;
+    newUser.firstName = firstName;
+    newUser.lastName = lastName;
+    newUser.phone = phone;
+    newUser.updatedAt = new Date();
+    newUser.updatedBy = userId;
+
+    const response = await repository
+      .createQueryBuilder()
+      .update(User)
+      .set({ firstName: firstName, lastName: lastName, phone: phone, email: email, updatedAt: new Date(), updatedBy: userId })
+      .where('id = :id', { id })
+      .execute();
+    res.status(200).send({ message: 'Information has been updated' });
+  }
+
+  async delete(req: Request, res: Response) {
+    const repository = AppDataSource.getRepository(User);
+    const { id } = req.params;
+    const response = await repository.createQueryBuilder().update(User).set({ isDeleted: true }).where('id = :id', { id }).execute();
+    res.status(200).send(response);
   }
 }
